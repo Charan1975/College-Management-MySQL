@@ -26,7 +26,7 @@ select * from [dbo].[gradees]
     group by [dbo].[gradees].student_id,[dbo].[students].first_name,last_name
     order by gpa desc
 
---- 2) Faculty Performance – Average student grade per faculty.
+--- 2) Faculty Performance â€“ Average student grade per faculty.
 select faculty_name, AVG(
         CASE 
             WHEN  [dbo].[gradees].grade = 'A+'  THEN  90
@@ -59,7 +59,7 @@ FROM [dbo].[attendence]
 GROUP BY student_id
 
 
--- 4) Gender-wise Performance – Compare average scores of male vs female students.
+-- 4) Gender-wise Performance â€“ Compare average scores of male vs female students.
 
 select gender, AVG(
         CASE 
@@ -77,7 +77,7 @@ group by gender
 
 
 
---- 5) Pass/Fail Report – Count of students passed vs failed by subject.
+--- 5) Pass/Fail Report â€“ Count of students passed vs failed by subject.
 
 SELECT 
    [dbo].[course].course_name,
@@ -94,7 +94,7 @@ GROUP BY [dbo].[course].course_name
 ORDER BY [dbo].[course].course_name;
 
 
--- 6) Faculty Performance – Average student grade per faculty. 
+-- 6) Faculty Performance â€“ Average student grade per faculty. 
 select [dbo].[faculty].faculty_name, AVG(
         CASE 
             WHEN  [dbo].[gradees].grade = 'A+'  THEN 90
@@ -108,4 +108,5 @@ select [dbo].[faculty].faculty_name, AVG(
 from [dbo].[faculty] join [dbo].[course] on 
 [dbo].[faculty].department=[dbo].[course].department join 
 [dbo].[gradees] on [dbo].[course].course_id=[dbo].[gradees].course_id
+
 group by [dbo].[faculty].faculty_name
