@@ -1,0 +1,111 @@
+Use clg_mangmnt;
+
+--create database  clg_mangmnt
+
+select * from [dbo].[attendence]
+select * from [dbo].[course]
+select * from[dbo].[faculty]
+select * from[dbo].[students]
+select * from [dbo].[gradees]
+
+ --- 1) list of top 10 students by GPA'S -- 
+  
+    select top 10 
+    [dbo].[gradees].student_id,first_name,last_name,AVG(
+            CASE 
+                WHEN [dbo].[gradees].grade = 'A+' THEN 9.0
+                WHEN [dbo].[gradees].grade = 'A'  THEN 8.5
+                WHEN [dbo].[gradees].grade = 'B+' THEN 8.0
+                WHEN [dbo].[gradees].grade = 'B'  THEN 7.0
+                WHEN [dbo].[gradees].grade = 'C+' THEN 6.0
+                WHEN [dbo].[gradees].grade = 'C'  THEN 5.0
+                ELSE 0
+            END
+        ) AS GPA
+    from [dbo].[gradees] join [dbo].[students] on [dbo].[gradees].student_id = [dbo].[students].student_id where grade='A+'
+    group by [dbo].[gradees].student_id,[dbo].[students].first_name,last_name
+    order by gpa desc
+
+--- 2) Faculty Performance – Average student grade per faculty.
+select faculty_name, AVG(
+        CASE 
+            WHEN  [dbo].[gradees].grade = 'A+'  THEN  90
+            WHEN  [dbo].[gradees].grade = 'A'   THEN  85
+            WHEN  [dbo].[gradees].grade = 'B+'  THEN  80
+            WHEN  [dbo].[gradees].grade = 'B'   THEN  70
+            WHEN  [dbo].[gradees].grade = 'C+'  THEN  60
+            ELSE  NULL
+        END
+    ) as 'avg_student_grade'
+from [dbo].[faculty]  join [dbo].[course] on 
+[dbo].[faculty].department = [dbo].[course].department JOIN [dbo].[gradees]
+ON [dbo].[course].course_id  = [dbo].[gradees].course_id
+group by faculty_name
+    
+ -- 3)checking the student attendence--
+
+SELECT 
+    student_id,
+    COUNT(status) AS TotalDays,
+    SUM(CASE WHEN status = 'Absent' THEN 1 ELSE 0 END) AS AbsentCount,
+    SUM(CASE WHEN status = 'Present' THEN 1 ELSE 0 END) AS PresentCount,
+    CASE 
+        WHEN SUM(CASE WHEN status = 'Absent' THEN 1 ELSE 0 END) > 
+             SUM(CASE WHEN status = 'Present' THEN 1 ELSE 0 END)
+        THEN 'Low Attendance'
+        ELSE 'OK'
+    END AS AttendanceStatus
+FROM [dbo].[attendence]
+GROUP BY student_id
+
+
+-- 4) Gender-wise Performance – Compare average scores of male vs female students.
+
+select gender, AVG(
+        CASE 
+            WHEN  [dbo].[gradees].grade = 'A+'  THEN 90
+            WHEN [dbo].[gradees].grade = 'A' THEN 85
+            WHEN [dbo].[gradees].grade = 'B+'  THEN 80
+            WHEN [dbo].[gradees].grade = 'B'  THEN 70
+            WHEN [dbo].[gradees].grade = 'C+'  THEN 60
+            ELSE Null--FAIL 
+        END
+    ) as 'avg_student_grade'
+from [dbo].[gradees] join [dbo].[students] on 
+[dbo].[gradees].student_id = [dbo].[gradees].student_id 
+group by gender
+
+
+
+--- 5) Pass/Fail Report – Count of students passed vs failed by subject.
+
+SELECT 
+   [dbo].[course].course_name,
+    COUNT(CASE 
+              WHEN g.grade IN ('A+', 'A', 'B+', 'B', 'C+') THEN 1 
+          END) AS passed_count,
+    COUNT(CASE 
+              WHEN g.grade NOT IN ('A+', 'A', 'B+', 'B', 'C+') THEN 1 
+          END) AS failed_count
+FROM [dbo].[gradees] g
+JOIN [dbo].[course]
+    ON g.course_id = [dbo].[course].course_id
+GROUP BY [dbo].[course].course_name
+ORDER BY [dbo].[course].course_name;
+
+
+-- 6) Faculty Performance – Average student grade per faculty. 
+select [dbo].[faculty].faculty_name, AVG(
+        CASE 
+            WHEN  [dbo].[gradees].grade = 'A+'  THEN 90
+            WHEN [dbo].[gradees].grade = 'A' THEN 85
+            WHEN [dbo].[gradees].grade = 'B+'  THEN 80
+            WHEN [dbo].[gradees].grade = 'B'  THEN 70
+            WHEN [dbo].[gradees].grade = 'C+'  THEN 60
+            ELSE NULL 
+        END
+    ) as 'avg_student_grade'
+from [dbo].[faculty] join [dbo].[course] on 
+[dbo].[faculty].department=[dbo].[course].department join 
+[dbo].[gradees] on [dbo].[course].course_id=[dbo].[gradees].course_id
+group by [dbo].[faculty].faculty_name
