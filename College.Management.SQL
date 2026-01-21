@@ -1,6 +1,6 @@
-Use clg_mangmnt;
+Use clg_mangmnt
 
-create database  clg_mangmnt
+--create database  clg_mangmnt
 
 -- checking the table data
 select * from [dbo].[attendence]
@@ -111,5 +111,6 @@ from [dbo].[faculty] join [dbo].[course] on
 [dbo].[gradees] on [dbo].[course].course_id=[dbo].[gradees].course_id
 
 group by [dbo].[faculty].faculty_name
+
 
 
