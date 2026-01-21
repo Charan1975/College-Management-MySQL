@@ -31,9 +31,16 @@ through structured queries and relational database concepts.
 ## 🛠️ Technologies Used
 - MySQL
 - SQL  
-  (SELECT, JOIN, GROUP BY, HAVING, COUNT, AVG, CASE)
+ 
+---
+## 🧠 Key Concepts Used 
+- (JOINS) to join different talbes
+- Aggregate Functions
+- Conditional Expression
 
 ---
 
-## 🗂️ Project Structure
+## Author
+Charan Teja
+
 
